@@ -9,9 +9,7 @@ os.system('mode con cols=64 lines=20')
 os.system('color 0A')
 
 def main(content):
-    
     os.system('cls||clear')
-    
     # Интерфейс
     tui.title('Крутильщик классов для децкава конкурса')
     tui.label('Что делать?')
@@ -26,7 +24,28 @@ def main(content):
         main(content)
 
     if com == 0:
-        tryToConnect(content)
+        def tryToCon(content):     
+            os.system('cls||clear')   
+            tui.title('Ща накрутим классов на конкурсе)')
+            tui.ul(['Чупа - 47703','Солнечный день - 47714'])
+            mem = input('за кого голосуем? ')
+            if mem.isnumeric and len(mem) == 5:
+                url = 'https://stolicadetstva.com/competition/vote/' + mem
+                attempt = input('Сколько классов крутить?: ')
+                try:
+                    attempt = int(attempt)
+                except:
+                    print('нужно ввести цифру')
+                    time.sleep(2)
+                    tryToCon(content)
+                if attempt < 0:
+                    main(content)
+            else:
+                print('Нужно ввести номер голосования длиной в 5 символов')
+                time.sleep(2)
+                tryToCon(content)
+            tryToConnect(content, url, attempt)
+        tryToCon(content)
     elif com == 1:
         proxyParser(content)
     elif com == 2:
@@ -37,13 +56,13 @@ def main(content):
             time.sleep(2)
             main(content)
     elif com == 3:
-        members()
+        membersFunc()
     else:
         print('Нужно ввести цифру от 0 до 3')
         time.sleep(2)
         main(content)
 
-def tryToConnect(content):
+def tryToConnect(content, url, attempt):
     '''
     Подбор прокси из списка и попытка соединения с сервером
     '''
@@ -56,46 +75,29 @@ def tryToConnect(content):
         usedproxy = open('usedproxy.txt', 'x')
         usedproxy.close()
     usedproxyfile = open('usedproxy.txt', 'a')
-    tui.title('Ца накрутим классов на конкурсе)')
-    tui.ul(['Чупа - 47703','Солнечный день - 47714'])
-    mem = input('за кого голосуем? ')
-    if mem.isnumeric and len(mem) == 5:
-        url = 'https://stolicadetstva.com/competition/vote/' + mem
-        attempt = input('Сколько классов крутить?: ')
-        try:
-            attempt = int(attempt)
-        except:
-            print('нужно ввести цифру')
-            time.sleep(2)
-            tryToConnect(content)
-        if 0 < attempt:
-            for i in content:
-                if i not in usedproxy and attempt > 0:
-                    ip = i
-                    usedproxy.append(i)
-                    print('\n' + i, file=usedproxyfile)
-                    print(ip, end='\r')
-                    try:
-                        requests.get(url, proxies=dict(http = 'socks5://'+ip, https = 'socks5://'+ip))
-                    except:
-                        tryToConnect(content)
-                attempt -= 1
-                print('Классов осталось {}'.format(attempt), end='\r')
-                time.sleep(0.5)
-            usedproxyfile.close()
-            main(content)
-        elif attempt < 0:
-            main(content)
-        else:
-            print('нужно ввести цифру больше 0')
-            time.sleep(2)
-            tryToConnect(content)
-    elif mem.isnumeric and int(mem) < 0:
-        main(content)
-    else:
-        print('Нужно ввести номер голосования длиной в 5 символов')
-        time.sleep(2)
-        tryToConnect(content)
+    while attempt > 0:
+        for i in content:
+            if i not in usedproxy:
+                ip = i
+                usedproxy.append(i)
+                print('\n' + i, file=usedproxyfile)
+                usedproxyfile.close()
+                print(ip, end='\n')
+                try:
+                    print('request', end='\r')
+                    requests.get(url, proxies=dict(http = 'socks5://'+ip, https = 'socks5://'+ip), timeout=5)
+                    print('request Accepted')
+                    time.sleep(1)
+                    os.system('cls||clear')
+                    tryToConnect(content, url, attempt)
+                    attempt -= 1
+                    print(attempt)
+                except:
+                    print('Not requesting')
+                    time.sleep(1)
+                    tryToConnect(content, url, attempt)
+                print(i)
+    main(content)
 
 def proxyParser(content):
     '''
@@ -127,19 +129,29 @@ def proxyParser(content):
             print(ips, file=proxyfile)
 
     f.close()
+    os.remove('socks.html')
     main(content)
 
-def members():
+def membersFunc():
     os.system('cls||clear')
-    tui.title('Сбор информации об участниках')
 
     '''Переменные'''
     lot_id = []                                                 # Список имен
     members = 0                                                 # Кол-во участников
     allready = []                                               # Список использованных имен
     membersDict = {}                                            # Словарь участников и кол-ва их голосов
-
-    url = 'https://stolicadetstva.com/competition/work/277/'    # Адресс для парсинга
+    tui.ul(['"Мохнатые, пернатые" - 277'])
+    contest = input('Введи номер конкурса: ')
+    if contest.isnumeric() and len(contest):
+        url = 'https://stolicadetstva.com/competition/work/' + contest
+    elif int(contest) < 0:
+        main(content)
+    else:
+        print('Нужно ввести числовой номер конкурса из 3 цифр..')
+        time.sleep(3)
+        membersFunc()
+    os.system('cls||clear')
+    tui.title('Сбор информации об участниках')
     r = requests.get(url)                                       # Запрос всей страницы
     soup = BeautifulSoup(r.text, 'html.parser')                 # Подготовка к парсингу
     lots = soup.find_all('li', 'compe_comment_li')              # Парсинг всех 'li' тегов с классом 'compe_comment_li'
@@ -164,9 +176,9 @@ def members():
     print('\n\n')
     votesList = list(membersDict.items())                       # Преобразование словаря участников в список
     votesList.sort(key=lambda i: i[1])                          # Сортировка списка по возрастанию значений словаря
-    #print('Участников :' + str(members) + '\n\n', file=f)       # Запись в файл кол-ва участников
     for i in votesList:                                         # Запись и вывод участников по возрастанию голосов
         print(i[0], ':', i[1])
+    print('\n\nУчастников: ', members)
     ext = input('\nНажми "Enter", чтобы выйти в главное меню\nили введите "y" чтобы вывести список в файл\n')
     if ext == 'y':  
         try:
@@ -176,8 +188,8 @@ def members():
             f.close()
             f = open('members.txt', 'w')
         for i in votesList:
-            #print(i[0], ':', i[1])
             print(i[0], ':', i[1], file=f)
+        print('\n\nУчастников: ', members, file=f)
         print('сохранено в файл "members.txt"')
         f.close()
         time.sleep(2)
