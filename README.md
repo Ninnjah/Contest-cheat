@@ -48,3 +48,25 @@ It's possible because website check only your ip address for voting, and i used 
   ```
 # Screenshot of the website
 ![](https://github.com/Ninnjah/animalContest/blob/master/contestWebsite.png)
+
+---
+># Additional info
+>## easyTui
+>easyTui it's my module for easy TUI in my programs
+>## Alpha version
+>this is my first version of this cheat. It's uses a Tor browser with subprocess module. It's bad but it my first program
+>```python
+>for i in range(n):
+>    x = 0
+>    while x < len(links):
+>        #tor.open_new_tab(links[x-1])
+>        tor.open_new_tab('https://stolicadetstva.com/competition/vote/47714/')
+>        x += 1
+>        time = random.randint(50,65)
+>        while time > 0:
+>            tui.updatingScore('До закрытия браузера', time, 1)
+>            time -= 1
+>        subprocess.run(['TASKKILL', '/F', '/IM', 'firefox.exe'], stdout=subprocess.DEVNULL)
+>        classi += 1
+>        print('\a', end = '')
+>```
