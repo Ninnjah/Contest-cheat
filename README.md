@@ -53,7 +53,7 @@ It's possible because website check only your ip address for voting, and i used 
 ># Additional info
 >## easyTui
 >easyTui it's my module for easy TUI in my programs
->## Alpha version
+>## Alpha version   NO MORE UPDATES
 >this is my first version of this cheat. It's uses a Tor browser with subprocess module. It's bad but it my first program
 >```python
 >for i in range(n):
