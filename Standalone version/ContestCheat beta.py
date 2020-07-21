@@ -17,16 +17,18 @@ def main(content):                                      #### Главное ме
                                                         ### Интерфейс
     tui.title('Крутильщик классов для децкава конкурса')# Заголовок
     tui.label('Что делать?')                            #
-    tui.ol(['Крутить классы',                           # Варианты ответов                
+    tui.ol(['Крутить классы', 
+            'Крутить классы нескольким участникам',     # Варианты ответов                
             'Собрать новый список прокси',              #
             'Удалить список использованных прокси',     #
-            'Вывести список участников'])               #
+            'Вывести список участников',
+            'Открыть сайт конкурса'])                #
     print('чтобы вернуться сюда введи число меньше нуля')
     com = input()                                       ## Запрос команды пользователя
     try:                                                # проверка команды
         com = int(com)                                  
     except:                                             
-        print('Нужно ввести цифру от 0 до 3')           
+        print('Нужно ввести цифру от 0 до 5')           
         time.sleep(2)                                   
         main(content)                                   
                                                         ### Запуск функций выбранных пользователем
@@ -47,6 +49,8 @@ def main(content):                                      #### Главное ме
                     tryToCon(content)                               
                 if attempt < 0:                                     # Выход в главное меню
                     main(content)
+            elif int(mem) < 0:
+                main(content)
             else:
                 print('Нужно ввести номер голосования длиной в 5 символов')
                 time.sleep(2)
@@ -55,11 +59,45 @@ def main(content):                                      #### Главное ме
             tryToConnect(content, url, attempt)                     # Запуск функции накрутки
         
         tryToCon(content)
+        main(content)  
 
-    elif com == 1:                                      ## Сбор ip прокси из html файла
+    elif com == 1:                                      ## Накрутка нескольким
+        def tryToCon(content):     
+            os.system('cls||clear')                                 # Очистка консоли
+            tui.title('Ща накрутим классов на конкурсе)')           # Заголовок
+            tui.ul(['Чупа - 47703','Солнечный день - 47714'])       # Маркированный список
+            attempt = input('Сколько классов крутить?: ')       # Запрос команды на кол-во голосов
+            try:                                                # Проверка команды
+                attempt = int(attempt)
+            except:
+                print('нужно ввести цифру')
+                time.sleep(2)
+                tryToCon(content)                               
+            if attempt < 0:                                     # Выход в главное меню
+                main(content)
+            mem = input('за кого голосуем? ')                       # Запрос команды
+            if int(mem) < 0:
+                main(content)
+            mems = mem.split()
+            usedmem = []
+            for i in mems:
+                try:                                            # Попытка удалить
+                    os.remove('usedproxy.txt')
+                    main(content)
+                except:                                         # Если неудача
+                    print('Список уже удален..')                # Вывод сообщения "список уже удален"
+                    time.sleep(2)
+                usedmem.append(i)
+                url = 'https://stolicadetstva.com/competition/vote/' + i  # адресс голосования
+                os.system('cls||clear')                                 # Очистка консоли
+                tryToConnect(content, url, attempt)                     # Запуск функции накрутки
+        tryToCon(content)
+        main(content)    
+                    
+    elif com == 2:                                      ## Сбор ip прокси из html файла
         proxyParser(content)
 
-    elif com == 2:                                      ## Удаление списка использованных прокси
+    elif com == 3:                                      ## Удаление списка использованных прокси
         try:                                            # Попытка удалить
             os.remove('usedproxy.txt')
             main(content)
@@ -68,11 +106,14 @@ def main(content):                                      #### Главное ме
             time.sleep(2)
             main(content)                               # Главное меню
 
-    elif com == 3:                                      ## Сбор информации об участниках
+    elif com == 4:                                      ## Сбор информации об участниках
         membersFunc()
 
+    elif com == 5:
+        webbrowser.open('https://stolicadetstva.com/competition/work/277/', new=0, autoraise=True)
+
     else:                                               ## Проверка команды
-        print('Нужно ввести цифру от 0 до 3')
+        print('Нужно ввести цифру от 0 до 5')
         time.sleep(2)
         main(content)                                   # Главное меню
 
@@ -85,18 +126,24 @@ def tryToConnect(content, url, attempt):                #### Накрутка г
             usedproxy = f.readlines()
         usedproxy = [x.strip() for x in usedproxy] 
     except:                                             # При неудачи создать файл и открыть его
-        usedproxy = open('usedproxy.txt', 'x')
+        usedproxy = open('usedproxy.txt', 'w')
         usedproxy.close()
         with open('usedproxy.txt') as f:
             usedproxy = f.readlines()
         usedproxy = [x.strip() for x in usedproxy] 
+    if len(list(set(content) - set(usedproxy))) == 0:
+        tui.title('Неиспользованных прокси не осталось!')
+        tui.ul(['Зайдите в главное меню','Соберите новый список прокси [2]','Или удалите список использованных [3]\n\tэффективность будет хуже'])
+        input('\nНажмите "Enter"..')
+        main(content)
+    print('Осталось неиспользованных прокси серверов :', len(list(set(content) - set(usedproxy))))
     usedproxyfile = open('usedproxy.txt', 'a')          # Открыть файл использованных прокси на дозапись
     while attempt > 0:                                  # Пока попытки больше 0
         for i in content:                               # берем каждый ip из файла
             if i not in usedproxy:                      # И если он еще не использовался
                 ip = i
                 usedproxy.append(i)                     # Дописываем в список ip прокси
-                print('\n' + i, file=usedproxyfile)     # Записываем его в файл
+                print(i, file=usedproxyfile)            # Записываем его в файл
                 usedproxyfile.close()                   # Закрываем файл
                 print(ip, end='\n')                     # Выводим на экран ip Прокси
                 try:                                    ## Попытка установить соединение
@@ -111,7 +158,10 @@ def tryToConnect(content, url, attempt):                #### Накрутка г
                     print('Not requesting')             # Выводим 'Not requesting'
                     time.sleep(1)                       # Ждем 1 секунду
                     tryToConnect(content, url, attempt) # Перезапускаем функцию
-    main(content)                                       ## Главное меню
+            elif len(list(set(content + usedproxy))) == 0:
+                tui.title('Все прокси использованны..')
+                tui.ul(['Перейдите в главное меню','Соберите новый список прокси','Или очистите список использованных прокси'])
+                time.sleep(4)                           ## Главное меню
 
 def proxyParser(content):                               #### Сбор списка прокси
     '''
@@ -124,8 +174,10 @@ def proxyParser(content):                               #### Сбор списк
         html = [x.strip() for x in html] 
     else:                                               # Если неудача, выводим сообщение
         tui.label('!!Нет файла страницы!!')
-        tui.ul(['Сохрани страницу http://spys.one/proxies/ в виде html','Перемести в корневую папку приложения','Переименуй в socks.html'])
-        ext = input('введи "y" для перехода на страницу..')
+        tui.ul(['Зайди на http://spys.one/proxies/','Выставь  парамметры'])
+        tui.ol(['Тип: SOCKS5','Порт: 1080','По: 500'])
+        tui.ul(['Сохрани страницу в корневую папку приложени\n\tс именем "socks.html"'])
+        ext = input('введи "y" для чтобы перейти на страницу..')
         if ext == 'y':                                  # Открываем браузер с нужным сайтом
             webbrowser.open('http://spys.one/proxies/', new=0, autoraise=True)
             main(content)
@@ -135,15 +187,17 @@ def proxyParser(content):                               #### Сбор списк
     tui.title('Сбор ip прокси...')                      # Заголовок
     with open('socks.html', encoding='utf-8') as f:     # Открытие файла для чтения
         html = f.read()                                 # 
-    proxyfile = open('proxy.txt', 'a')                  # Открытие файла со списком прокси на дозапись
+    proxyfile = open('proxy.txt', 'w')                  # Открытие файла со списком прокси на дозапись
     soup = BeautifulSoup(html, 'html.parser')           # Парсер
-    ip = soup.find_all('tr', 'spy1xx')                  # Парсим все 'tr' теги с классом 'sp1xx'
-    for i in ip:                                        # В каждом 'tr' теге
-        ips = i.find_next('td').text                    # Ищем первый 'td' тег
+    for script in soup.find_all('script'):
+        script.extract()                                # Парсим все 'tr' теги с классом 'sp1xx'
+    for i in soup.find_all('tr', 'spy1xx'):             # В каждом 'tr' теге
+        ips = i.find_next('font','spy14')               # Ищем первый 'td' тег
         if ips not in content:                          # И если этого ip нет в файле, то записываем
-            print(ips, file=proxyfile)                  # Запись ip в файл
-
-    f.close()                                           # Закрываем файл
+            print(ips.get_text() + ':1080')
+            print(ips.get_text() + ':1080', file=proxyfile)# Запись ip в файл
+    time.sleep(2)
+    proxyfile.close()                                   # Закрываем файл
     os.remove('socks.html')                             # Удаляем socks.html
     main(content)                                       # Выходим в главное меню
 
@@ -176,16 +230,25 @@ def membersFunc():                                      #### Сбор инфор
     for i in lot_ids:                                           # Преобразования тегов 'p' в список
         lot_id.append(i.text)                                   #
 
+
     for i in lots:
         for x in lot_id:
             if x in i.text and not x in allready:               # Поиск имен из lot_id в тегах 'li' не используемые ранее
                 ans = i.find('p', 'compe_comment').text         # Ищем текст тегов 'p' с классом 'compe_comment'
+                try:
+                    link = i.find(text='Голосую').parent.get('href')
+                    link = link.replace('/competition/vote/', '')
+                    link = link.replace('/', '')
+                except:
+                    link = 'кончился'
                 ans = ans.replace(' | Голосую', '')             # Удаляем из текста ' | Голосую'
                 votes = int(ans.replace('Голосов: ', ''))       # Удаляем остальной текст для преобразования в int
-                membersDict.setdefault(x, votes)                # Создаем словарь из ключа x и значения votes
                 allready.append(x)                              # Добавляем x в уже использованные
+                x = link + ': ' + x
+                membersDict.setdefault(x, votes)                # Создаем словарь из ключа x и значения votes
                 members += 1                                    # Увеличиваем кол-во участников
                 tui.updatingScore('Участников', members, 0)     # Запускаем счетчик участников
+                
 
     '''Сортировка участников по голосам и запись их в файл'''
     print('\n\n')
@@ -204,11 +267,16 @@ def membersFunc():                                      #### Сбор инфор
             f = open('members.txt', 'x')                        # Создаем файл и открываем на запись
         membersTemp = members                                   # Временная переменная для вывода топа
         for i in votesList:                                     # Запись участников в файл
-            print(membersTemp, '\t', i[0], ':', i[1])           #
+            print(membersTemp, '\t', i[0], ':', i[1], file=f)   #
+            membersTemp -= 1                                    #
         print('\n\nУчастников: ', members, file=f)              # Запись кол-ва участников в файл
         print('сохранено в файл "members.txt"')                 # 
         f.close()                                               # Закрваем файл
         time.sleep(2)                                           # Ждем 2 секунды
+    lot_id = None                                               # Список имен
+    members = None                                              # Кол-во участников
+    allready = None                                             # Список использованных имен
+    membersDict = None                                          # Словарь участников и кол-ва их голосов
     main(content)                                               # Выходим в главное меню
 
 try:                                                    ## Попытка открыть файл с прокси
@@ -216,6 +284,10 @@ try:                                                    ## Попытка отк
         content = f.readlines()                         # Выводим строки в список
     content = [x.strip() for x in content]              # Чистим строки от лишних символов
 except:                                                 ## Иначе
+    tui.title('Видимо это первый запуск приложения')
+    time.sleep(1)
+    tui.ul(['Сейчас будет запущена функция сборки листа прокси серверов'])
+    time.sleep(2)
     content = open('proxy.txt', 'x')                    # Создаем файл
     content.close()                                     # Закрываем файл
     with open('proxy.txt') as f:                        # Открываем файл

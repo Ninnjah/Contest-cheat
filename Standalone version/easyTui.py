@@ -19,9 +19,8 @@ import re
 
 def title(title):
     length = len(title) + 6
-    print('=' * length)
-    print('--', title, '--')
-    print('=' * length)
+    titlestr = '=' * length + '\n-- ' + title + ' --\n' + '=' * length
+    print(titlestr)
 
 def label(label):
     length = len(label) + 6
@@ -49,3 +48,5 @@ def ol(options):
         print('  [' + str(num) + ']', i)
         num += 1
     print('-' * 24)
+
+ol(['Text Sample', '2 Sample', '3 Sample'])
