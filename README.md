@@ -1,4 +1,7 @@
 # Animal Contest vote cheat
+
+![Banner](https://github.com/Ninnjah/Contest-cheat/blob/master/banner.JPG)
+
 It's a little program need for cheat votes for a child animal contest(i've coded it for my sister).
 
 It's possible because website check only your ip address for voting, and i used a socks5 proxy servers to bypass protection [contest](https://stolicadetstva.com/competition/work/277/)
