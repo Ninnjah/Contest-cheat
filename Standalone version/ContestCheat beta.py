@@ -20,7 +20,7 @@ def main(content):                                      #### Главное ме
     print(lang.printMainBack)
     com = input()                                       ## Запрос команды пользователя      
                                                         ### Запуск функций выбранных пользователем
-    if com == '0':                                        ## Накрутка
+    if com == '0':                                      ## Накрутка
         def tryToCon(content):     
             os.system('cls||clear')                                 # Очистка консоли
             tui.title(lang.titleTryToCon)                                # Заголовок
@@ -49,7 +49,7 @@ def main(content):                                      #### Главное ме
         tryToCon(content)
         main(content)  
 
-    elif com == '1':                                      ## Накрутка нескольким
+    elif com == '1':                                    ## Накрутка нескольким
         def tryToCon(content):                          
             os.system('cls||clear')                                 # Очистка консоли
             tui.title(lang.titleTryToCon)                           # Заголовок
@@ -114,10 +114,11 @@ def main(content):                                      #### Главное ме
         openwebsite()
         main(content)
 
-    elif com == '6':
+    elif com == '6':                                    ## Настройки
         settings()
+        main(content)
 
-    elif com == '228' or com.lower() == 'exit':
+    elif com == '228' or com.lower() == 'exit':         ## Выход
         quit()
 
     else:                                               ## Проверка команды
@@ -206,8 +207,11 @@ def proxyParser(content):                               #### Сбор списк
     os.remove('socks.html')                             # Удаляем socks.html
 
 def membersFunc():                                      #### Сбор информации об участниках
+    '''
+    Сбор данных об участниках (Место в топе, код голосования,
+                                Название, Количество голосов,)
+    '''
     os.system('cls||clear')
-
     '''Переменные'''
     lot_id = []                                                 # Список имен
     members = 0                                                 # Кол-во участников
@@ -224,7 +228,7 @@ def membersFunc():                                      #### Сбор инфор
         time.sleep(3)                                           #
         membersFunc()                                           # Перезапускаем функцию
     os.system('cls||clear')                                     # Очищаем консоль
-    tui.title(lang.titleMembers)                  # Выводим заголовок
+    tui.title(lang.titleMembers)                                # Выводим заголовок
     r = requests.get(url)                                       # Запрос всей страницы
     soup = BeautifulSoup(r.text, 'html.parser')                 # Подготовка к парсингу
     lots = soup.find_all('li', 'compe_comment_li')              # Парсинг всех 'li' тегов с классом 'compe_comment_li'
@@ -277,25 +281,30 @@ def membersFunc():                                      #### Сбор инфор
         time.sleep(2)                                           # Ждем 2 секунды
     main(content)                                               # Выходим в главное меню
 
-def settings():
+def settings():                                         #### Настройка config.ini
+    '''
+    Установка языка в конфиг
+    '''
     os.system('cls||clear')                             # Очистка консоли
-    tui.title('Settings')
-    tui.ol(['English lang', 'Russian lang'])
-    cmd = input()
-    try:
-        cmd = int(cmd)
+    tui.title('Settings')                               # Заголовок
+    tui.ol(['English lang', 'Russian lang'])            # Список вариантов
+    cmd = input()                                       # Ввод команды
+    try:                                                # Проверка ввода на целое число
+        cmd = int(cmd)                                  # Если ввод меньше нуля и конфиг имеется
         if int(cmd) < 0 and os.path.exists('config.ini'):
-            main(content)
-    except:
+            main(content)                               # То выходим в главное меню
+    except:                                             # Иначе показываем пример ввода
         print('Enter 0/1')
         time.sleep(1)
-        settings()
+        settings()                                      # Перезапускаем функцию
+    # Set English lang in config // Установка Английского языка в конфиг
     if cmd == 0:
         config = configparser.ConfigParser()
         config.add_section("Settings")
         config.set("Settings", "lang", "en")  
         with open('config.ini', "w") as config_file:
             config.write(config_file)
+    # Set Russian lang in config // Установка Русского языка в конфиг
     elif cmd == 1:
         config = configparser.ConfigParser()
         config.add_section("Settings")
@@ -306,38 +315,58 @@ def settings():
         print('Enter number 0-1')
         time.sleep(1)
         settings()
-    quit()
+    langCheck()
 
-if __name__ == "__main__":                                  ## Инициализация    
-    ver = '200722'                                          ## Версия приложения
-    os.system('mode con cols=64 lines=20')                  # Установка размеров консоли
-    os.system('color 0A')                                   # Установка цвета консоли    
-    confget = ''
+def langCheck():                                        #### Проверка config.ini и установка языка
+    '''
+    Проверка значения языка в конфиге
+    '''
     if not os.path.exists('config.ini'):
-        settings()
+        config = configparser.ConfigParser()
+        config.add_section("Settings")
+        config.set("Settings", "lang", "en")  
+        with open('config.ini', "w") as config_file:
+            config.write(config_file)
+
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    confget = config.get("Settings", "lang")
+    # Check English lang // Проверка Англйский язык
+    if confget == 'en':
+        global lang
+        import lang.en as lang
+    # Check Russian lang // Проверка Русский язык
+    elif confget == 'ru':
+        global lang
+        import lang.ru as lang
     else:
         config = configparser.ConfigParser()
-        config.read('config.ini')
-        confget = config.get("Settings", "lang")
-        if confget == 'en':
-            import lang.en as lang
-        elif confget == 'ru':
-            import lang.ru as lang
-        else:
-            settings()
+        config.add_section("Settings")
+        config.set("Settings", "lang", "en")  
+        with open('config.ini', "w") as config_file:
+            config.write(config_file)
 
-    if os.path.exists('proxy.txt'):                         ## Проверка наличия файла прокси листа
-        with open('proxy.txt') as f:                        # Открываем файл
-            content = f.readlines()                         # Выводим строки в список
-        content = [x.strip() for x in content]              # Чистим строки от лишних символов
-    else:                                                   ## Иначе
+if __name__ == "__main__":                              ## Инициализация    
+    ver = '200726'                                      ## Версия приложения
+    os.system('mode con cols=64 lines=20')              # Установка размеров консоли
+    os.system('color 0A')                               # Установка цвета консоли    
+    confget = ''
+    global lang
+
+    langCheck()
+
+    if os.path.exists('proxy.txt'):                     ## Проверка наличия файла прокси листа
+        with open('proxy.txt') as f:                    # Открываем файл
+            content = f.readlines()                     # Выводим строки в список
+        content = [x.strip() for x in content]          # Чистим строки от лишних символов
+    else:                                               ## Иначе
         tui.ul(lang.ProxyInitMsg)
         time.sleep(2)
-        content = open('proxy.txt', 'x')                    # Создаем файл
-        content.close()                                     # Закрываем файл
-        with open('proxy.txt') as f:                        # Открываем файл
-            content = f.readlines()                         # Выводим строки в список
-        content = [x.strip() for x in content]              # Чистим строки от лишних символов
-        proxyParser(content)                                # Запускаем генератор прокси листа
+        content = open('proxy.txt', 'x')                # Создаем файл
+        content.close()                                 # Закрываем файл
+        with open('proxy.txt') as f:                    # Открываем файл
+            content = f.readlines()                     # Выводим строки в список
+        content = [x.strip() for x in content]          # Чистим строки от лишних символов
+        proxyParser(content)                            # Запускаем генератор прокси листа
 
-    main(content)                                           # Запуск главного меню
+    main(content)                                       # Запуск главного меню
