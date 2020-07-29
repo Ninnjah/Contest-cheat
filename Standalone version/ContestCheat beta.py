@@ -81,12 +81,54 @@ def main(content):                                      #### Главное ме
                 tryToConnect(content, url, attempt)                 # Запуск функции накрутки
         tryToCon(content)                               # Запуск функции                                       
         main(content)                                   # Выход в главное меню после выполнения
-                    
-    elif com == '2':                                    ## Сбор ip прокси из html файла
+         
+    elif com == '2':                                  ## Накрутка через сеть Tor
+        def tryToCon(content):     
+            os.system('cls||clear')                     # Очистка консоли
+            tui.title(lang.titleTryToCon)               # Заголовок
+            tui.ul(['Чупа - 47703','Солнечный день - 47714']) # Маркированный список
+            mem = input(lang.inputTryToConMem)          # Запрос команды
+            if mem.isnumeric and len(mem) == 5:         # Проверка команды
+                url = 'https://stolicadetstva.com/competition/vote/' + mem  # адресс голосования
+                attempt = input(lang.inputTryToConAttempt) # Запрос команды на кол-во голосов
+                try:                                    # Проверка команды
+                    attempt = int(attempt)
+                except:
+                    print(lang.exceptNeedNumber)
+                    time.sleep(2)
+                    tryToCon(content)                               
+                if attempt < 0:                         # Выход в главное меню
+                    main(content)
+            elif int(mem) < 0:
+                main(content)
+            else:
+                print(lang.exceptMain)
+                time.sleep(2)
+                tryToCon(content)
+            os.system('cls||clear')                     # Очистка консоли
+            tryToTorConnect(content, url, attempt)      # Запуск функции накрутки
+
+        def checkTor():
+            os.system('cls||clear')                     # Очистка консоли
+            cmd = input(lang.torCheck)
+            if cmd.lower() in 'yд':
+                tryToCon(content)
+            elif cmd.lower() in 'nн':
+                cmd = input(lang.noTor)
+                if cmd.lower() in 'yд':
+                    webbrowser.open('https://www.torproject.org/ru/download/tor/')
+                main(content)
+            else:
+                print(lang.exceptTor)
+                time.sleep(1)
+                checkTor()
+        checkTor()
+           
+    elif com == '3':                                    ## Сбор ip прокси из html файла
         proxyParser(content)
         main(content)
 
-    elif com == '3':                                    ## Удаление списка использованных прокси
+    elif com == '4':                                    ## Удаление списка использованных прокси
         try:                                            # Попытка удалить
             os.remove('usedproxy.txt')
             main(content)
@@ -95,10 +137,10 @@ def main(content):                                      #### Главное ме
             time.sleep(2)
             main(content)                               # Главное меню
 
-    elif com == '4':                                    ## Сбор информации об участниках
+    elif com == '5':                                    ## Сбор информации об участниках
         membersFunc()
 
-    elif com == '5':                                    ## Открытие сайта конкурса
+    elif com == '6':                                    ## Открытие сайта конкурса
         def openwebsite():
             tui.ul(['"Мохнатые, пернатые" - 277'])                  # Пример ввода
             contest = input(lang.inputContestNom)                   # Запрос ввода
@@ -114,7 +156,7 @@ def main(content):                                      #### Главное ме
         openwebsite()
         main(content)
 
-    elif com == '6':                                    ## Настройки
+    elif com == '7':                                    ## Настройки
         settings()
         main(content)
 
@@ -168,6 +210,27 @@ def tryToConnect(content, url, attempt):                #### Накрутка г
                 tui.ul(lang.ulTryToCon)                 ### и инструкцию по исправлению проблемы
                 input(lang.inputPressEnter)             # Ожидание пользователя
                 main(content)                           # Выход в главное меню
+
+def tryToTorConnect(content, url, attempt):
+    proxies = {
+        'http': "socks5h://localhost:9050",
+        'https': "socks5h://localhost:9050"
+    }
+    print(attempt)
+    while attempt > 1:
+        try:                                    ## Попытка установить соединение
+            ### GET запрос на url через прокси dict с таймаутом в 10 секунд
+            print('request', end='\r')          # Выводим 'request' и возвращаем каретку в начало этой строки
+            requests.get(url, proxies=proxies)
+            print('request Accepted')           # Если соединение успешно то выводим 'request Accepted'
+            time.sleep(1)                       # Ждем 1 секунду
+            attempt -= 1                        # Уменьшаем попытки на 1
+            tryToTorConnect(content, url, attempt) # Перезапускаем функцию
+        except:                                 ## Если неудача
+            print('Not requesting')             # Выводим 'Not requesting'
+            time.sleep(1)                       # Ждем 1 секунду
+            tryToTorConnect(content, url, attempt) # Перезапускаем функцию
+    main(content)
 
 def proxyParser(content):                               #### Сбор списка прокси
     '''
@@ -347,7 +410,7 @@ def langCheck():                                        #### Проверка co
             config.write(config_file)
 
 if __name__ == "__main__":                              ## Инициализация    
-    ver = '200726'                                      ## Версия приложения
+    ver = '200729'                                      ## Версия приложения
     os.system('mode con cols=64 lines=20')              # Установка размеров консоли
     os.system('color 0A')                               # Установка цвета консоли    
     confget = ''

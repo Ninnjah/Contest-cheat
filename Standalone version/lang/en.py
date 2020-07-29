@@ -4,11 +4,12 @@ ProxyInitMsg = ['Proxy list parse Starting now..']
 titleMain = 'ContestCheat beta v.'
 labelMain = 'What to do?'
 olMainOpt = ['Cheatvoting', 
-            'Cheatvoting for some participants', 
+            'Cheatvoting for some participants',
+            'Cheatvoting with Tor Network\n',
             'Parse new proxy list', 
             'Delete list of used proxy', 
             'Print list of participants', 
-            'Open contest Website',
+            'Open contest Website\n',
             'Settings']
 exitMain = ['To exit enter "exit"']
 printMainBack = 'to return here enter a number less than zero'
@@ -23,6 +24,11 @@ ulTryToCon = ['Go to main menu',
             'Parse new proxy list [2]', 
             'or delete used proxy list [3]\n\tefficiency will be worse']
 exceptProxyLost = 'Not left unused proxy!'
+
+#Tor
+torCheck = 'Do you have installed Tor(not browser) on your PC?  y/n  '
+exceptTor = 'You need to enter y/n'
+noTor = 'Do you want to install it? y/n  '
 
 #proxy
 printProxyLeft = 'Left unused proxy servers: '
@@ -50,6 +56,6 @@ inputProxyp = 'enter "y" to go to the webpage..'
 # MembersFunc
 titleMembers = 'Parse info about participants'
 outlinkMembers = 'over'
-memMembers = 'Participant'
+memMembers = 'Participants'
 inputMembers = '\nPress "Enter", to go in main menu\nor enter "y" to save list in the file\n'
 saveMembers = 'Saved in file "members.txt"'
