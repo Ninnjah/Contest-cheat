@@ -18,17 +18,17 @@ Actually this program just send request using a proxy server from proxy list
   
 2. Generating proxy ip list from html file of 'http://spys.one/proxies/'
   ```python
-    with open('socks.html', encoding='utf-8') as f:
-        html = f.read()
-        
-    proxyfile = open('proxy.txt', 'a')
-    soup = BeautifulSoup(html, 'html.parser')
-    ip = soup.find_all('tr', 'spy1xx')
-    
-    for i in ip:
-        ips = i.find_next('td').text
-        if ips not in content:
-            print(ips, file=proxyfile)
+    with open('socks.html', encoding='utf-8') as f: 
+        html = f.read()                              
+    proxyfile = open('proxy.txt', 'w')              
+    soup = BeautifulSoup(html, 'html.parser')     
+    for script in soup.find_all('script'):
+        script.extract()                            
+    for i in soup.find_all('tr', 'spy1xx'):          
+        ips = i.find_next('font','spy14')              
+        if ips not in content:                       
+            print(ips.get_text() + ':1080')
+            print(ips.get_text() + ':1080', file=proxyfile)# Запись ip в файл
   ```
  3. Deleting list of used proxy ips(just in case)
   ```python
