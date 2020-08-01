@@ -14,7 +14,7 @@ Actually this program just send request using a proxy server from proxy list
   
   requests.get(url, proxies=dict(http = 'socks5://'+ip, https = 'socks5://'+ip))
   ```
-1. Cheat voting for list of "vote id"
+1. Cheat voting with Tor
   
 2. Generating proxy ip list from html file of 'http://spys.one/proxies/'
   ```python
@@ -37,21 +37,27 @@ Actually this program just send request using a proxy server from proxy list
         except:
             print('Already deleted..')
             time.sleep(2)
-            main(content)
   ```
   4. Collecting information about contest members
   ```python
-    for i in lots:                                              
-        for x in lot_id:                                       
-            if x in i.text and not x in allready:              
-                ans = i.find('p', 'compe_comment').text        
-                ans = ans.replace(' | Голосую', '') 
-                votes = int(ans.replace('Голосов: ', ''))
-                allready.append(x)  
-                x = link + ': ' + x        
-                membersDict.setdefault(x, votes)      
-                members += 1                    
-                tui.updatingScore('Участников', members, 0) 
+  for i in lots:                                        
+        member = i.find('p', 'who').get_text()                
+        votes = i.find('p', 'compe_comment').get_text()       
+        votes = votes.replace(' | Голосую', '')              
+        votes = int(votes.replace('Голосов: ', ''))       
+        try:                                                 
+            link = i.find(text='Голосую').parent.get('href')   
+            link = link.replace('/competition/vote/', '')      
+            link = link.replace('/', '')                        
+        except AttributeError:                                
+            link = lang.get('outlinkMembers')
+        if not link in allready or link == lang.get('outlinkMembers'):
+            allready.append(link)                     
+            member = link + ': ' + member                   
+            memDict = {member : votes}                 
+            membersDict.append(memDict)                         
+            members += 1                                        
+            print(tui.updScore(lang.get('memMembers'), members, 0), end='\r')
   ```
   5. Open contest website
   ```python
