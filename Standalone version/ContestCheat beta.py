@@ -6,6 +6,8 @@ import time                                             # Для установ�
 import configparser                                     # Для натстроек
 from bs4 import BeautifulSoup                           # Для парсинга страниц
 import easyTui as tui                                   # Мой модуль для TUI
+import json
+import members #! УДАЛИТЬ
 
 def main(content):                                      #### Главное меню
     '''
@@ -13,23 +15,23 @@ def main(content):                                      #### Главное ме
     '''
     os.system('cls||clear')                             # Очистка консоли
                                                         ### Интерфейс
-    print(tui.title(lang.titleMain + ver))                          # Заголовок
-    print(tui.label(lang.labelMain))                    #
-    print(tui.ol(lang.olMainOpt))                       # Функции в главном меню
-    print(tui.ul(lang.exitMain))                        # Выход
-    print(lang.printMainBack)
+    print(tui.title(lang.get('titleMain') + ver))       # Заголовок
+    print(tui.label(lang.get('labelMain')))             #
+    print(tui.ol(lang.get('olMainOpt')))                # Функции в главном меню
+    print(tui.ul(lang.get('exitMain')))                 # Выход
+    print(lang.get('printMainBack'))
     com = input()                                       ## Запрос команды пользователя   
 
 #! Запуск функций выбранных пользователем
     if com == '0':                                      ## Накрутка
         def tryToCon(content):   
             os.system('cls||clear')                     # Очистка консоли
-            print(tui.title(lang.titleTryToCon))        # Заголовок
+            print(tui.title(lang.get('titleTryToCon'))) # Заголовок
             print(tui.ul(['Чупа - 47703',               # Маркированный список
                         'Солнечный день - 47714'])) 
 
-            mem = input(lang.inputTryToConMem)          # Запрос команды
-            attempt = input(lang.inputTryToConAttempt)  # Запрос команды на кол-во голосов
+            mem = input(lang.get('inputTryToConMem'))   # Запрос команды
+            attempt = input(lang.get('inputTryToConAttempt'))  # Запрос команды на кол-во голосов
 
             ## Проверка на правильность ввода кода голосования
             def numbersCheck(mem, attempt):                      
@@ -37,16 +39,16 @@ def main(content):                                      #### Главное ме
                     try:
                         int(mem)
                     except ValueError:
-                        print(lang.exceptMain)
+                        print(lang.get('exceptMain'))
                         time.sleep(2)
                         tryToCon(content)
                 
                 try:                                        # Проверка ввода на цифру
                     int(attempt)                               
-                    if int(attempt) < 0:                         # Выход в главное меню
+                    if int(attempt) < 0:                    # Выход в главное меню
                         main(content)
                 except ValueError:
-                    print(lang.exceptNeedNumber)
+                    print(lang.get('exceptNeedNumber'))
                     time.sleep(2)
                     tryToCon(content)
             
@@ -67,11 +69,11 @@ def main(content):                                      #### Главное ме
     elif com == '1':                                    ## Накрутка через сеть Tor
         def tryToCon(content):     
             os.system('cls||clear')                     # Очистка консоли
-            print(tui.title(lang.titleTryToCon))        # Заголовок
+            print(tui.title(lang.get('titleTryToCon'))) # Заголовок
             print(tui.ul(['Чупа - 47703',               # Маркированный список
                         'Солнечный день - 47714'])) 
-            mem = input(lang.inputTryToConMem)          # Запрос команды
-            attempt = input(lang.inputTryToConAttempt) # Запрос команды на кол-во голосов
+            mem = input(lang.get('inputTryToConMem'))   # Запрос команды
+            attempt = input(lang.get('inputTryToConAttempt')) # Запрос команды на кол-во голосов
 
             ## Проверка на правильность ввода кода голосования
             def numbersCheck(mem, attempt):                      
@@ -79,16 +81,16 @@ def main(content):                                      #### Главное ме
                     try:
                         int(mem)
                     except ValueError:
-                        print(lang.exceptMain)
+                        print(lang.get('exceptMain'))
                         time.sleep(2)
                         tryToCon(content)
                 
                 try:                                        # Проверка ввода на цифру
                     int(attempt)                               
-                    if int(attempt) < 0:                         # Выход в главное меню
+                    if int(attempt) < 0:                    # Выход в главное меню
                         main(content)
                 except ValueError:
-                    print(lang.exceptNeedNumber)
+                    print(lang.get('exceptNeedNumber'))
                     time.sleep(2)
                     tryToCon(content)
             
@@ -112,23 +114,23 @@ def main(content):                                      #### Главное ме
             except:
                 config.set("Settings", "tor", "")  
                 confget = config.get("Settings", "tor")
-            # Check English lang // Проверка Англйский язык
+            # Check English lang.get // Проверка Англйский язык
             if confget == 'y':
                 tryToCon(content)
             else:
-                cmd = input(lang.torCheck)
+                cmd = input(lang.get('torCheck'))
                 if cmd.lower() in 'yд':
                     config.set("Settings", "tor", "y")  
                     with open('config.ini', "w") as config_file:
                         config.write(config_file)
                     tryToCon(content)
                 elif cmd.lower() in 'nн':
-                    cmd = input(lang.noTor)
+                    cmd = input(lang.get('noTor'))
                     if cmd.lower() in 'yд':
                         webbrowser.open('https://www.torproject.org/ru/download/tor/')
                     main(content)
                 else:
-                    print(lang.exceptTor)
+                    print(lang.get('exceptTor'))
                     time.sleep(1)
                     checkTor()
 
@@ -143,7 +145,7 @@ def main(content):                                      #### Главное ме
             os.remove('usedproxy.txt')
             main(content)
         except:                                         # Если неудача
-            print(lang.exceptListRemoved)               # Вывод сообщения "список уже удален"
+            print(lang.get('exceptListRemoved'))        # Вывод сообщения "список уже удален"
             time.sleep(2)
             main(content)                               # Главное меню
 
@@ -152,15 +154,15 @@ def main(content):                                      #### Главное ме
 
     elif com == '5':                                    ## Открытие сайта конкурса
         def openwebsite():
-            print(tui.ul(['"Мохнатые, пернатые" - 277']))           # Пример ввода
-            contest = input(lang.inputContestNom)                   # Запрос ввода
-            if contest.isnumeric() and len(contest):                # Проверка ввода
+            print(tui.ul(['"Мохнатые, пернатые" - 277'])) # Пример ввода
+            contest = input(lang.get('inputContestNom')) # Запрос ввода
+            if contest.isnumeric() and len(contest):        # Проверка ввода
                 url = 'https://stolicadetstva.com/competition/work/' + contest
                 webbrowser.open(url, new=0, autoraise=True)
             elif int(contest) < 0:                                  # Если ввод меньше 0, то переход в главное меню
                 main(content)                                       #
             else:                                                   #
-                print(lang.exceptContestNum)
+                print(lang.get('exceptContestNum'))
                 time.sleep(3)                                       #
                 openwebsite()
         os.system('cls||clear')                     # Очистка консоли
@@ -175,12 +177,16 @@ def main(content):                                      #### Главное ме
         quit()
 
     else:                                               ## Проверка команды
-        print(lang.exceptMain)
+        print(lang.get('exceptMain'))
         time.sleep(1)
         main(content)                                   # Главное меню
 
-#! Функции  
 
+def json_read(file):                                    # Чтение JSON
+        with open(file, "r", encoding='utf-8') as read_file:
+            data = json.load(read_file)
+        return data
+#! Функции  
 def is_5digit(str):                                     # Проверка строки на число из 5 цифр
     try:
         int(str)
@@ -215,7 +221,7 @@ def tryToConnect(content, votecodes, attempt):          #### Накрутка г
         print('Классы для ' + i)
         while attempt > 0:                                  # Цикл накрутки
             ### Выводим сколько осталось неисползованных прокси
-            print(lang.printProxyLeft, len(list(set(content) - set(usedproxy))))
+            print(lang.get('printProxyLeft'), len(list(set(content) - set(usedproxy))))
             for ip in content:                              # Берем каждый ip из файла прокси
                 if ip not in usedproxy:                     # И если он еще не использовался
                     usedproxyfile = open('usedproxy.txt', 'a')# Открыть файл использованных прокси на дозапись
@@ -234,10 +240,11 @@ def tryToConnect(content, votecodes, attempt):          #### Накрутка г
                         print('Not requesting')             # Выводим 'Not requesting'
                         time.sleep(1)                       # Ждем 1 секунду
                 elif len(list(set(content) - set(usedproxy))) == 0:  ## Проверка на наличие неиспользованных прокси
-                    print(tui.title(lang.exceptProxyLost))  ### Выводим информацию об этом 
-                    print(tui.ul(lang.ulTryToCon))          ### и инструкцию по исправлению проблемы
-                    input(lang.inputPressEnter)             # Ожидание пользователя
+                    print(tui.title(lang.get('exceptProxyLost')))  ### Выводим информацию об этом 
+                    print(tui.ul(lang.get('ulTryToCon')))   ### и инструкцию по исправлению проблемы
+                    input(lang.get('inputPressEnter'))      # Ожидание пользователя
                     main(content)                           # Выход в главное меню
+    usedproxy = None
     print('\a\a')
     main(content)
 
@@ -248,22 +255,25 @@ def tryToTorConnect(content, votecodes, attempt):       #### Накрутка г
     }
     attempt = int(attempt)
     tempAttempt = attempt
-    for i in votecodes:
+    for i in votecodes: #!members.listM: УДАЛИТЬ
         attempt = tempAttempt
         url = 'https://stolicadetstva.com/competition/vote/' + i
-        print(lang.voteFor + i)
+        print(lang.get('voteFor') + i, 
+            '{0} : {1}'.format(votecodes.index(i)+1, len(votecodes)))
         while attempt > 0:
             try:                                    ## Попытка установить соединение
                 ### GET запрос на url через прокси dict с таймаутом в 10 секунд
-                print(lang.req, end='\r')          # Выводим 'request' и возвращаем каретку в начало этой строки
+                print(lang.get('req'), end='\r')    # Выводим 'request' и возвращаем каретку в начало этой строки
                 requests.get(url, proxies=proxies)
-                print(lang.reqA)           # Если соединение успешно то выводим 'request Accepted'
+                print(lang.get('reqA'))             # Если соединение успешно то выводим 'request Accepted'
                 time.sleep(1)                       # Ждем 1 секунду
                 attempt -= 1                        # Уменьшаем попытки на 1
             except:                                 ## Если неудача
-                print(lang.reqD)             # Выводим 'Not requesting'
+                print(lang.get('reqD'))             # Выводим 'Not requesting'
                 time.sleep(1)                       # Ждем 1 секунду
+    votecodes = None
     print('\a\a')
+    #!os.system('shutdown /s') УДАЛИТЬ
     main(content)
 
 def proxyParser(content):                               #### Сбор списка прокси
@@ -276,18 +286,18 @@ def proxyParser(content):                               #### Сбор списк
             html = f.readlines()
         html = [x.strip() for x in html] 
     else:                                               # Если неудача, выводим сообщение
-        print(tui.label(lang.exceptProxyPTitle))
-        print(tui.ul(lang.ulProxyP1))
-        print(tui.ol(lang.olProxyP))
-        print(tui.ul(lang.ulProxyP2))
-        ext = input(lang.inputProxyp)
+        print(tui.label(lang.get('exceptProxyPTitle')))
+        print(tui.ul(lang.get('ulProxyP1')))
+        print(tui.ol(lang.get('olProxyP')))
+        print(tui.ul(lang.get('ulProxyP2')))
+        ext = input(lang.get('inputProxyp'))
         if ext == 'y':                                  # Открываем браузер с нужным сайтом
             webbrowser.open('http://spys.one/proxies/', new=0, autoraise=True)
             main(content)
         else:                                           # Главное меню
             main(content)                               
 
-    print(tui.title(lang.titleProxyP))                  # Заголовок
+    print(tui.title(lang.get('titleProxyP')))           # Заголовок
     with open('socks.html', encoding='utf-8') as f:     # Открытие файла для чтения
         html = f.read()                                 # 
     proxyfile = open('proxy.txt', 'w')                  # Открытие файла со списком прокси на дозапись
@@ -315,17 +325,17 @@ def membersFunc():                                      #### Сбор инфор
     allready = []                                               # Список использованных имен
     membersDict = {}                                            # Словарь участников и кол-ва их голосов
     print(tui.ul(['"Мохнатые, пернатые" - 277']))               # Пример ввода
-    contest = input(lang.inputContestNom)                       # Запрос ввода
+    contest = input(lang.get('inputContestNom'))                # Запрос ввода
     if contest.isnumeric() and len(contest):                    # Проверка ввода
         url = 'https://stolicadetstva.com/competition/work/' + contest
     elif int(contest) < 0:                                      # Если ввод меньше 0 то выходим в главное меню
         main(content)                                           #
     else:                                                       # Иначе сообщаем об ошибке ввода
-        print(lang.exceptContestNum)
+        print(lang.get('exceptContestNum'))
         time.sleep(3)                                           #
         membersFunc()                                           # Перезапускаем функцию
     os.system('cls||clear')                                     # Очищаем консоль
-    print(tui.title(lang.titleMembers))                         # Выводим заголовок
+    print(tui.title(lang.get('titleMembers')))                  # Выводим заголовок
     r = requests.get(url)                                       # Запрос всей страницы
     soup = BeautifulSoup(r.text, 'html.parser')                 # Подготовка к парсингу
     lots = soup.find_all('li', 'compe_comment_li')              # Парсинг всех 'li' тегов с классом 'compe_comment_li'
@@ -344,14 +354,14 @@ def membersFunc():                                      #### Сбор инфор
                     link = link.replace('/competition/vote/', '') # Очищаем от лишнего
                     link = link.replace('/', '')
                 except:                                         # Иначе пишем, что конкурс закончился
-                    link = lang.outlinkMembers
+                    link = lang.get('outlinkMembers')
                 ans = ans.replace(' | Голосую', '')             # Удаляем из текста ' | Голосую'
                 votes = int(ans.replace('Голосов: ', ''))       # Удаляем остальной текст для преобразования в int
                 allready.append(x)                              # Добавляем x в уже использованные
                 x = link + ': ' + x                             # К каждому имени вначали приписываем Код голосования через двоеточие
                 membersDict.setdefault(x, votes)                # Создаем словарь из ключа x и значения votes
                 members += 1                                    # Увеличиваем кол-во участников
-                print(tui.updScore(lang.memMembers, members, 0), end='\r')# Запускаем счетчик участников
+                print(tui.updScore(lang.get('memMembers'), members, 0), end='\r')# Запускаем счетчик участников
                 
     '''Сортировка участников по голосам и запись их в файл'''
     print('\n\n')
@@ -361,9 +371,9 @@ def membersFunc():                                      #### Сбор инфор
     for i in votesList:                                         # Вывод участников по возрастанию голосов
         print(membersTemp, '\t', i[0], ':', i[1])               #
         membersTemp -= 1                                        #
-    print('\n\n', lang.memMembers, ': ', members)               # Выводим общее кол-во участников
-    ext = input(lang.inputMembers)
-    if ext in 'YyДд':                                              # Запрос команды на печать списка в файл
+    print('\n\n', lang.get('memMembers'), ': ', members)        # Выводим общее кол-во участников
+    ext = input(lang.get('inputMembers'))
+    if ext.lower() == 'y' or ext.lower() == 'д':                # Запрос команды на печать списка в файл
         try:                                                    # Проверка файла на наличие
             f = open('members.txt', 'w')                        # Открываем на запись
         except:                                                 # Если его нет
@@ -372,8 +382,8 @@ def membersFunc():                                      #### Сбор инфор
         for i in votesList:                                     # Запись участников в файл
             print(membersTemp, '\t', i[0], ':', i[1], file=f)   # 
             membersTemp -= 1                                    #
-        print('\n\n', lang.memMembers, ': ', members, file=f)   # Запись кол-ва участников в файл
-        print(lang.saveMembers)                                 # 
+        print('\n\n', lang.get('memMembers'), ': ', members, file=f)   # Запись кол-ва участников в файл
+        print(lang.get('saveMembers'))                          # 
         f.close()                                               # Закрываем файл
         time.sleep(2)                                           # Ждем 2 секунды
     main(content)                                               # Выходим в главное меню
@@ -428,14 +438,13 @@ def langCheck():                                        #### Проверка co
     config = configparser.ConfigParser()
     config.read('config.ini')
     confget = config.get("Settings", "lang")
+    global lang
     # Check English lang // Проверка Англйский язык
     if confget == 'en':
-        global lang
-        import lang.en as lang
+        lang = json_read('lang/en.json')
     # Check Russian lang // Проверка Русский язык
     elif confget == 'ru':
-        global lang
-        import lang.ru as lang
+        lang = json_read('lang/ru.json')
     else:
         config = configparser.ConfigParser()
         config.add_section("Settings")
