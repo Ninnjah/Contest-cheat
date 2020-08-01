@@ -6,8 +6,7 @@ import time                                             # Для установ�
 import configparser                                     # Для натстроек
 from bs4 import BeautifulSoup                           # Для парсинга страниц
 import easyTui as tui                                   # Мой модуль для TUI
-import json
-import members #! УДАЛИТЬ
+import json                                             # Для локализации
 
 def main(content):                                      #### Главное меню
     '''
@@ -181,7 +180,6 @@ def main(content):                                      #### Главное ме
         time.sleep(1)
         main(content)                                   # Главное меню
 
-
 def json_read(file):                                    # Чтение JSON
         with open(file, "r", encoding='utf-8') as read_file:
             data = json.load(read_file)
@@ -255,7 +253,7 @@ def tryToTorConnect(content, votecodes, attempt):       #### Накрутка г
     }
     attempt = int(attempt)
     tempAttempt = attempt
-    for i in votecodes: #!members.listM: УДАЛИТЬ
+    for i in votecodes:
         attempt = tempAttempt
         url = 'https://stolicadetstva.com/competition/vote/' + i
         print(lang.get('voteFor') + i, 
@@ -273,7 +271,6 @@ def tryToTorConnect(content, votecodes, attempt):       #### Накрутка г
                 time.sleep(1)                       # Ждем 1 секунду
     votecodes = None
     print('\a\a')
-    #!os.system('shutdown /s') УДАЛИТЬ
     main(content)
 
 def proxyParser(content):                               #### Сбор списка прокси
@@ -466,7 +463,7 @@ if __name__ == "__main__":                              ## Инициализа�
             content = f.readlines()                     # Выводим строки в список
         content = [x.strip() for x in content]          # Чистим строки от лишних символов
     else:                                               ## Иначе
-        print(tui.ul(lang.ProxyInitMsg))
+        print(tui.ul(lang.get('ProxyInitMsg')))
         time.sleep(2)
         content = open('proxy.txt', 'x')                # Создаем файл
         content.close()                                 # Закрываем файл
