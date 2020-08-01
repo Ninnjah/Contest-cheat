@@ -450,7 +450,7 @@ def langCheck():                                        #### Проверка co
             config.write(config_file)
 
 if __name__ == "__main__":                              ## Инициализация    
-    ver = '200729'                                      ## Версия приложения
+    ver = '200801'                                      ## Версия приложения
     os.system('mode con cols=64 lines=24')              # Установка размеров консоли
     os.system('color 0A')                               # Установка цвета консоли    
     confget = ''
