@@ -28,7 +28,7 @@ Actually this program just send request using a proxy server from proxy list
         ips = i.find_next('font','spy14')              
         if ips not in content:                       
             print(ips.get_text() + ':1080')
-            print(ips.get_text() + ':1080', file=proxyfile)# Запись ip в файл
+            print(ips.get_text() + ':1080', file=proxyfile)
   ```
  3. Deleting list of used proxy ips(just in case)
   ```python
